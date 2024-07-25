@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmLoading 
-   Caption         =   "Загрузка"
+   Caption         =   "Loading"
    ClientHeight    =   2400
    ClientLeft      =   120
    ClientTop       =   465
@@ -16,7 +16,7 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 ' Name: frmLoading
-' Author: Михаил Красюк
+' Author: Mikhail Krasyuk
 ' Date: 16.07.2024
 
 Option Explicit
@@ -28,7 +28,7 @@ Private m_nSymbols    As Long
 
 Private m_sLoadingBar As String
 
-' Инициализация
+' Initialization
 Private Sub UserForm_Initialize()
     
     On Error GoTo ErrorHandler_Initialize
@@ -48,7 +48,7 @@ Private Sub UserForm_Initialize()
     
 ErrorHandler_Initialize:
 
-    Call Lib.FatalError("Не удалось инициализировать frmLoading")
+    Call Lib.FatalError("Failed to initialize frmLoading")
     Lib.DisableOptimization
     End
     
@@ -64,7 +64,7 @@ Public Sub SetInfo(ByVal Text As String)
     
 ErrorHandler_SetInfo:
     
-    Call Lib.FatalError("Не удалось изменить надпись на экране загрузки")
+    Call Lib.FatalError("Failed to update the loading screen text")
     Lib.DisableOptimization
     End
     
@@ -74,19 +74,19 @@ Public Sub SetProgress(ByVal Percentage As Long)
     
     On Error GoTo ErrorHandler_SetProgress
     
-    ' Реинициализация
+    ' Reinitialization
     Dim i As Long: m_sLoadingBar = ""
     
-    ' Обновление приватных переменных
+    ' Update private variables
     m_iPercentage = Percentage
     m_nSymbols = Round(m_iPercentage * m_fScale)
     
-    ' Заполнение лоадинг бара
+    ' Fill the loading bar
     For i = 1 To m_nSymbols
         m_sLoadingBar = m_sLoadingBar + "|"
     Next i
     
-    ' Обновление интерфейса
+    ' Update the interface
     lblPercentage = CStr(m_iPercentage & "%")
     lblLoadingBar = m_sLoadingBar
     
@@ -94,7 +94,7 @@ Public Sub SetProgress(ByVal Percentage As Long)
     
 ErrorHandler_SetProgress:
 
-    Call Lib.FatalError("Не удалось изменить Loading Bar")
+    Call Lib.FatalError("Failed to update the Loading Bar")
     Lib.DisableOptimization
     End
     
@@ -104,19 +104,19 @@ Public Sub IncreaseProgress(Optional ByVal Percentage As Long = 10)
     
     On Error GoTo ErrorHandler_IncreaseProgress
     
-    ' Реинициализация
+    ' Reinitialization
     Dim i As Long: m_sLoadingBar = ""
     
-    ' Обновление приватных переменных
+    ' Update private variables
     m_iPercentage = m_iPercentage + Percentage
     m_nSymbols = Round(m_iPercentage * m_fScale)
     
-    ' Заполнение лоадинг бара
+    ' Fill the loading bar
     For i = 1 To m_nSymbols
         m_sLoadingBar = m_sLoadingBar + "|"
     Next i
     
-    ' Обновление интерфейса
+    ' Update the interface
     lblPercentage = CStr(m_iPercentage & "%")
     lblLoadingBar = m_sLoadingBar
     
@@ -124,7 +124,7 @@ Public Sub IncreaseProgress(Optional ByVal Percentage As Long = 10)
     
 ErrorHandler_IncreaseProgress:
 
-    Call Lib.FatalError("Не удалось изменить Loading Bar")
+    Call Lib.FatalError("Failed to update the Loading Bar")
     Lib.DisableOptimization
     End
     

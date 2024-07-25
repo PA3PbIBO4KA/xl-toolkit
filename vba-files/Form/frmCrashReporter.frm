@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmCrashReporter 
-   Caption         =   "Критическая ошибка"
+   Caption         =   "Critical Error"
    ClientHeight    =   5550
    ClientLeft      =   120
    ClientTop       =   465
@@ -15,12 +15,12 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 ' Name: frmCrashReporter
-' Author: Михаил Красюк
+' Author: Mikhail Krasyuk
 ' Date: 16.07.2024
 
 Option Explicit
 
-' Инициализация
+' Initialization
 Private Sub UserForm_Initialize()
     
     lblExplanation.Caption = "Explanation: " & mcErrorExplanation

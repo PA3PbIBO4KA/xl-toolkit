@@ -1,39 +1,39 @@
 Attribute VB_Name = "mLibXL"
 
 ' Name: mLibXL
-' Author: Михаил Красюк
+' Author: Mikhail Krasyuk
 ' Date: 13.06.2024
 
 Option Explicit
 
-' Экземпляр класса
+' Class instance
 Global Lib As CLibXL
 
 ' FSO
 Global FileSystem As Object
 
-' Цвета
+' Colors
 Global mcWhiteColor As Long
 Global mcLightGreyColor As Long
 Global mcYellowColor As Long
 Global mcGreenColor As Long
 
-' Одна миллисекунда
+' One millisecond
 Global Const mcMillisecond As Double = 0.000000011574
 
-' Режимы расчета столбцов и строк
+' Modes for calculating columns and rows
 Global Const mcByFiltering = 0
 Global Const mcByEnd = 1
 Global Const mcByCycle = 2
 
-' Символьные константы
+' Character constants
 Global Const mcWholeRange = "A1:XFD1048576"
 Global Const mcBackslash = "\"
 
-' Для обработчика ошибок
+' For error handler
 Global mcErrorExplanation As String
 
-' Инициализация
+' Initialization
 Public Sub Init()
     
     mcWhiteColor = RGB(255, 255, 255)
@@ -50,8 +50,7 @@ Public Sub EnableDebugMode()
     Stop
 End Sub
 
-' Будет вызываться в конце программы, через обратный отсчет
+' Will be called at the end of the program, via countdown
 Public Sub CloseMacrosWorkbook()
     Workbooks(ThisWorkbook.Name).Close SaveChanges:=False
 End Sub
-

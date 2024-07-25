@@ -9,8 +9,8 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 
 ' Name: CBooksBehavior
-' Author: Михаил Красюк
-' Date: 13.06.2024
+' Author: Mikhail Krasyuk
+' Date: 27.07.2024
 
 Option Explicit
 
@@ -35,75 +35,73 @@ Private m_wsSplittingPrimary As Worksheet
 
 Private m_sCommonBookName As String
 
-' Инициализация
+' Initialization
 Private Sub class_initialize()
-    
+
     On Error GoTo ErrorHandler_OpenFile
-    
+
     Lib.AddLogNote "Macros Launched"
-    
+
     Set m_wbMacros = Workbooks(ThisWorkbook.Name)
-    
+
     With m_wbMacros
-        Set m_wsMacrosMainMenu = .Worksheets("Главное меню")
-        Set m_wsMacrosReferences = .Worksheets("Референсы")
+        Set m_wsMacrosMainMenu = .Worksheets("Main Menu")
+        Set m_wsMacrosReferences = .Worksheets("References")
     End With
-    
+
     Exit Sub
-    
+
 ErrorHandler_OpenFile:
 
-    Call Lib.FatalError("Не удалось открыть файл")
+    Call Lib.FatalError("Failed to open file")
     Lib.DisableOptimization
     End
-    
+
 End Sub
 
-' Переименнование книг в зависимости от даты
+' Renaming workbooks based on date
 Private Sub RenameWorkbook(ByRef Book As Workbook, ByRef Reference As String)
-    
+
     On Error GoTo ErrorHandler_Rename
-    
+
     Dim sYearToday As String: sYearToday = CStr(Year(Now))
     Dim sOldName   As String: sOldName = Book.Name
     Dim sOldRef    As String: sOldRef = Reference
     Dim iYear      As Long
-    
+
     For iYear = Year(Now) To 2024 Step -1
         If InStr(sOldName, CStr(iYear)) Then
-            
+
             sOldName = Replace(sOldName, CStr(iYear), sYearToday, 1, 1)
             Reference = Replace(sOldRef, CStr(iYear), sYearToday, 1, 1)
-            
+
             Exit For
-            
+
         End If
     Next iYear
-    
+
     Exit Sub
-    
+
 ErrorHandler_Rename:
 
-    Call Lib.FatalError("Не удалось переименовать файл")
+    Call Lib.FatalError("Failed to rename file")
     Lib.DisableOptimization
     End
-    
+
 End Sub
 
-' Открытие последнего свода
+' Opening previous summary
 Private Sub OpenPreviousCommon(Optional ByVal ReadOnly As Boolean = False)
-        
+
     On Error GoTo ErrorHandler_OpenFile
-        
+
     Dim sReference  As String
     Dim i           As Long
-        
-    ' Получение ссылки на книгу для сравнения сумм
+    
     For i = 13 To 2 Step -1
         If m_wsCommonPrimary.Cells(2, 35).Value Like m_wsMacrosReferences.Cells(i, 6).Value & "*" Then
-                
-            ' NOTE -- Мы берем на месяц назад, потому что отчет составляется за прошлый месяц
-            ' P.S. -- тут должен быть прописан путь
+
+            'NOTE -- We take the previous month because the report is generated for the previous month
             If Month(Now) = 1 Then
                 sReference = Year(Now) & "-" & "12" & "\1\" & "*" & ".xlsx"
             ElseIf Month(Now) > 10 Then
@@ -111,27 +109,27 @@ Private Sub OpenPreviousCommon(Optional ByVal ReadOnly As Boolean = False)
             Else
                 sReference = Year(Now) & "-" & "0" & Month(Now) - 1 & "\1\" & "*" & ".xlsx"
             End If
-            
+
             If Dir(sReference) <> "" Then
                 Exit For
             Else
                 Exit Sub
             End If
-                
+
         End If
     Next i
-    
+
     Set m_wbPreviousCommon = Workbooks.Open(Filename:=sReference, ReadOnly:=ReadOnly)
     Set m_wsPreviousCommonPrimary = m_wbPreviousCommon.Worksheets(1)
-    
+
     Exit Sub
-    
+
 ErrorHandler_OpenFile:
 
-    Call Lib.FatalError("Не удалось открыть файл")
+    Call Lib.FatalError("Failed to open file")
     Lib.DisableOptimization
     End
-    
+
 End Sub
 
 Public Sub CreateXLSXFile(sPath As String)
@@ -140,29 +138,29 @@ Public Sub CreateXLSXFile(sPath As String)
     
     ' Loading 5%
     With frmLoading
-        .SetInfo "Создание .xlsx файла..."
+        .SetInfo "Creating .xlsx file..."
         .SetProgress 5
     End With
     
     Call Lib.Delay(2000)
     
-    ' Формируем имя для итогового свода
+    ' Generated name for the summary summary
     If Month(Now) > 9 Then
-        m_sCommonBookName = "Свод " & Month(Now) & "." & Year(Now)
+        m_sCommonBookName = "Common " & Month(Now) & "." & Year(Now)
     Else
-        m_sCommonBookName = "Свод 0" & Month(Now) & "." & Year(Now)
+        m_sCommonBookName = "Common 0" & Month(Now) & "." & Year(Now)
     End If
     
-    ' Удаляем существующий итоговый свод если есть
+    ' Delete the existing summary summary if there is one
     If Lib.IsFileExists(sPath & "\" & m_sCommonBookName & ".xlsx") Then
         Call Kill(sPath & "\" & m_sCommonBookName & ".xlsx")
     End If
     
-    ' Создаем файл итогового свода
+    ' Create a summary file
     Set m_wbCommon = Workbooks.Add: Set m_wsCommonPrimary = m_wbCommon.Worksheets(1)
         
     With m_wbCommon
-        .Worksheets(1).Name = "свод"
+        .Worksheets(1).Name = "Common"
         .SaveAs sPath & "\" & m_sCommonBookName & ".xlsx"
     End With
     
@@ -170,50 +168,49 @@ Public Sub CreateXLSXFile(sPath As String)
     
 ErrorHandler_CreateFile:
 
-    Call Lib.FatalError("Не удалось создать .xlsx файл")
+    Call Lib.FatalError("Failed to create .xlsx file")
     Lib.DisableOptimization
     End
     
 End Sub
 
-' Создание таблицы
+' Creating table
 Public Sub CreateCommonTable()
     
     On Error GoTo ErrorHandler_CreateCommonTable
     
     ' Loading 15%
     With frmLoading
-        .SetInfo "Формирование табличной шапки..."
+        .SetInfo "Forming a table header..."
         .SetProgress 15
     End With
     
     Call Lib.Delay(2000)
     
-    ' Кол-во ссылок на сводные файлы по регионам и ссылка на проформу таблицы
+    ' Number of links to summary files by region and link to the proforma table
     Dim nRegionalReferences As Long: nRegionalReferences = m_wsMacrosReferences.Cells(2, 1).End(xlDown).Row
     Dim sHeadersReference   As String: sHeadersReference = m_wsMacrosReferences.Cells(2, 3).Value
     
-    ' Для первого месяца
+    ' For the first month
     Dim rngPeriod As Range
     
-    ' Книга с шаблоном
+    'Book with template
     Dim wbHeaders As Workbook:  Set wbHeaders = Workbooks.Open(Filename:=sHeadersReference, ReadOnly:=True)
-    Dim wsHeaders As Worksheet: Set wsHeaders = wbHeaders.Worksheets("свод")
+    Dim wsHeaders As Worksheet: Set wsHeaders = wbHeaders.Worksheets("Common")
     
-    ' Снимает фильтры, раскрывает столбцы
+    ' Removes filters, expands columns
     With wsHeaders
         .AutoFilterMode = False
         .Columns.Hidden = False
-        .Rows.Hidden = False ' NOTE -- Этого в ТЗ нет но я добавил
+        .Rows.Hidden = False
     End With
     
-    ' Ширина шапки
+    ' Headers width
     Dim nHeaderColumns As Long: nHeaderColumns = Lib.GetColumnsCount(Row:=3, Sheet:=wsHeaders)
     
-    ' NOTE -- iPasteRow - строка вставки диапозона
     Dim i, j, k, iPasteRow As Long: iPasteRow = 5
     
-    ' Года, месяца, шапка шаблона и их инициализация
+    ' Years, months, template header and their initialization
     
     Dim arrYears(), arrMonth() As String
     Dim arrHeaders()           As String
@@ -236,23 +233,23 @@ Public Sub CreateCommonTable()
         arrHeaders(i) = LCase(wsHeaders.Cells(3, i).Value)
     Next i
     
-    ' Добавляет шапку в итоговый свод
+    ' Adds a header to the summary summary
     wsHeaders.Range("A1:" & "AQ4").Copy Destination:=m_wsCommonPrimary.Range("A1")
     
-    ' Дублирование периодов шапки
-    ' NOTE -- минус 2 потому что, начинаем с нуля - раз; два - потому что формируем за прошлый месяц
+    ' Duplicate header periods
+    ' NOTE -- minus 2 because we start from scratch - once; two - because we form for the last month
     For i = 0 To Month(Now) - 2
         With m_wsCommonPrimary
             .Range(.Cells(1, 35 + (i * 9)), .Cells(4, 43 + (i * 9))).Copy Destination:=.Range(.Cells(1, 35 + ((i + 1) * 9)), .Cells(4, 43 + ((i + 1) * 9)))
         End With
     Next i
     
-    ' Форматирует названия шапок
+    ' Formats header names
     i = 0
     For j = Month(Now) + 1 To 2 Step -1
     
         With m_wsCommonPrimary
-            If Not arrMonth(j) = "Декабрь" Then
+            If Not arrMonth(j) = "December" Then
                 .Cells(2, 35 + (i * 9)).Value = m_wsMacrosReferences.Cells(j, 6).Value & " " & Year(Now)
             Else
                 .Cells(2, 35 + (i * 9)).Value = m_wsMacrosReferences.Cells(j, 6).Value & " " & Year(Now) - 1
@@ -263,11 +260,8 @@ Public Sub CreateCommonTable()
         
     Next j
     
-    ' Ширина итогового свода
-    Dim nCommonColumns As Long: nCommonColumns = Lib.GetColumnsCount(Row:=3, Method:=mcByFiltering, Sheet:=m_wsCommonPrimary)
-    
-    ' Новый Итоговый СВОД
-    Dim wbRegional As Workbook
+    Dim nCommonColumns    As Long: nCommonColumns = Lib.GetColumnsCount(Row:=3, Method:=mcByFiltering, Sheet:=m_wsCommonPrimary)
+    Dim wbRegional        As Workbook
     Dim wsRegionalPrimary As Worksheet
     
     With m_wsCommonPrimary
@@ -276,7 +270,7 @@ Public Sub CreateCommonTable()
     
     For i = 2 To nRegionalReferences
         
-        ' Присваеваем ссылку .xlsx файла
+        ' Assign a link to the .xlsx file
         Dim sRef As String: sRef = m_wsMacrosReferences.Cells(i, 1).Value
         
         On Error Resume Next
@@ -295,43 +289,43 @@ Public Sub CreateCommonTable()
     
     Lib.AddLogNote "Form of common table"
     
-    ' Формируем итоговый свод
+    ' Forming a final summary
     For i = 2 To nRegionalReferences
         
-        ' Открываем .xlsx файл по ссылке
+        ' Open the .xlsx file using the link
         Application.DisplayAlerts = False
         Set wbRegional = Workbooks.Open(Filename:=arrRefs(i), ReadOnly:=True)
         Application.DisplayAlerts = True
         
-        ' Loading +5% за каждый региональный свод
+        ' Loading +5% for each regional summary
         With frmLoading
-            .SetInfo "Заполнение из " & wbRegional.Name & "..."
+            .SetInfo wbRegional.Name & "..."
             .IncreaseProgress 5
         End With
         
-        Set wsRegionalPrimary = wbRegional.Worksheets("свод")
+        Set wsRegionalPrimary = wbRegional.Worksheets("Common")
         
-        ' Снимает фильтры, раскрывает столбцы
+        ' Removes filters, expands columns
         With wsRegionalPrimary
             .AutoFilterMode = False
             .Columns.Hidden = False
         End With
         
-        ' Кол-во столбцов и строк конкретно открытого файла
+        ' Number of columns and rows of a specific open file
         Dim nRows    As Long: nRows = Lib.GetRowsCount(Column:=1, Method:=mcByEnd, Sheet:=wsRegionalPrimary)
         Dim nColumns As Long: nColumns = Lib.GetColumnsCount(Row:=3, Method:=mcByFiltering, Sheet:=wsRegionalPrimary)
         
-        ' Буферная переменная
+        ' Buffer variable
         Dim rngBuffer As Range
         
         Dim iYear, iMonth, iMonthOld As Long
         
-        ' Вставка строк в первый диапозон
+        ' Inserting rows into the first range
         For j = 1 To nHeaderColumns - 9
             For k = 1 To nColumns
                 If arrHeaders(j) = LCase(wsRegionalPrimary.Cells(3, k).Value) Then
                     
-                    ' Копипаст ячеек
+                    ' Copy-paste cells
                     
                     With wsRegionalPrimary
                         Set rngBuffer = .Range(.Cells(5, k), .Cells(nRows, k))
@@ -339,22 +333,32 @@ Public Sub CreateCommonTable()
                     
                     With m_wsCommonPrimary
                         
-                        ' NOTE -- при первом заходе вставляются все данные ячеек
+                        ' NOTE -- on the first run, all cell data is inserted
                         If i = 2 Then
+Common_PasteAll:
                             rngBuffer.Copy
                             .Cells(iPasteRow, j).PasteSpecial xlPasteAll
                             Application.CutCopyMode = False
+                            
                         Else
+                            
+                            ' In rare cases, there may be a buffer overflow, so you will have to insert the entire column along with cell formats
+                            On Error GoTo Common_PasteAll
+                            
                             .Range(.Cells(iPasteRow, j), .Cells(rngBuffer.Cells.Count + (iPasteRow - 1), j)).Value = rngBuffer.Value
+                            
                         End If
                         
                     End With
+                    
+                    ' Return to default Error Handler
+                    On Error GoTo ErrorHandler_CreateCommonTable
                     
                 End If
             Next k
         Next j
         
-        ' Выбирается первый месяц, с которой начинается Итоговый СВОД
+        ' Select the first month from which the common table begins
         
         With wsRegionalPrimary
             Set rngPeriod = .Range(.Cells(2, 1), .Cells(2, nColumns))
@@ -382,17 +386,17 @@ Public Sub CreateCommonTable()
         
 BuildPeriods:
         
-        ' Номер 35-ой строки в открытой таблице
+        ' Number of the 35th row in the open table
         Set rngBuffer = wsRegionalPrimary.Cells(4, 1).EntireRow.Find("35", LookIn:=xlValues, LookAt:=xlPart)
         Dim n As Long: n = rngBuffer.Column
         
-        ' Вставка строк в периодные диапозоны
+        ' Inserting rows into period ranges
         For iMonth = iMonth To Month(Now)
             For j = 35 To 43
                 For k = n + ((iMonth - iMonthOld) * 9) To (n + 8) + ((iMonth - iMonthOld) * 9)
                     If arrHeaders(j) = LCase(wsRegionalPrimary.Cells(3, k).Value) Then
                         
-                        ' Копипаст ячеек
+                        ' Copy-paste cells
                         
                         With wsRegionalPrimary
                             Set rngBuffer = .Range(.Cells(5, k), .Cells(nRows, k))
@@ -400,18 +404,26 @@ BuildPeriods:
                         
                         With m_wsCommonPrimary
                             
-                            ' NOTE -- при первом заходе вставляются все данные ячеек
+                            ' NOTE -- on the first run, all cell data is inserted
                             If i = 2 Then
+Periods_PasteAll:
                                 rngBuffer.Copy
                                 .Cells(iPasteRow, j + (iMonth * 9)).PasteSpecial xlPasteAll
                                 Application.CutCopyMode = False
+                                
                             Else
-                                With m_wsCommonPrimary
-                                    .Range(.Cells(iPasteRow, j + (iMonth * 9)), .Cells(rngBuffer.Cells.Count + (iPasteRow - 1), j + (iMonth * 9))).Value = rngBuffer.Value
-                                End With
+                                
+                                ' In rare cases, there may be a buffer overflow, so you will have to insert the entire column along with cell formats
+                                On Error GoTo Periods_PasteAll
+                                
+                                .Range(.Cells(iPasteRow, j + (iMonth * 9)), .Cells(rngBuffer.Cells.Count + (iPasteRow - 1), j + (iMonth * 9))).Value = rngBuffer.Value
+                                
                             End If
                             
                         End With
+                        
+                        ' Return to default Error Handler
+                        On Error GoTo ErrorHandler_CreateCommonTable
                         
                         Exit For
                         
@@ -420,7 +432,7 @@ BuildPeriods:
             Next j
         Next iMonth
         
-        ' Сдвигаем на сточку вниз место нашего последующего копипаста
+        ' Move the place of our next copy-paste down one line
         iPasteRow = Lib.GetRowsCount(Column:=1, Sheet:=m_wsCommonPrimary) + 1
         
         wbRegional.Close SaveChanges:=False
@@ -431,12 +443,12 @@ BuildPeriods:
     
     Lib.AddLogNote "Form of additional table"
     
-    ' Кол-во строк итогового свода
+    ' Number of lines in the final summary
     Dim nCommonRows As Long: nCommonRows = Lib.GetRowsCount(Column:=1, Sheet:=m_wsCommonPrimary)
     
     nCommonColumns = Lib.GetColumnsCount(Row:=3, Method:=mcByFiltering, Sheet:=m_wsCommonPrimary)
     
-    ' Форматирует таблицу
+    ' Formats the table
     With m_wsCommonPrimary
     
         Call Lib.AcceptCellsBorders(TableRange:=.Range(.Cells(5, 1), .Cells(5, nCommonColumns)))
@@ -454,27 +466,27 @@ BuildPeriods:
     
     ' Loading 99%
     With frmLoading
-        .SetInfo "Формирование сравнительной таблицы..."
+        .SetInfo "Formation of a comparative table..."
         .SetProgress 99
     End With
     
     Call Lib.Delay(2000)
     
-    ' Лист последнего свода
+    ' Sheet of Previous Common table
     Call OpenPreviousCommon(ReadOnly:=True)
     
-    ' NOTE -- Итоговый СВОД за прошлый месяц может быть и не сформирован ко времени запуска макроса
+    ' NOTE -- Common Table for the previous month may not have been generated by the time the macro is run
     If Not m_wbPreviousCommon Is Nothing Then
         
         With m_wbCommon
-            .Worksheets.Add After:=m_wbCommon.Worksheets("свод")
+            .Worksheets.Add After:=m_wbCommon.Worksheets("Common")
             .Worksheets(2).Name = "для сравнения"
         End With
         
-        ' Лист для сравнения
+        ' Comparison sheet
         Dim wsAdditional As Worksheet: Set wsAdditional = m_wbCommon.Worksheets(2)
         
-        ' Формируем таблицу для сравнения
+        ' Form a table for comparison
         With wsAdditional
         
             Call Lib.AcceptCellsBorders(TableRange:=.Range("A1:C3"))
@@ -482,13 +494,13 @@ BuildPeriods:
             .Cells(1, 2).Value = m_sCommonBookName
             
             If Month(Now) > 9 Then
-                .Cells(1, 3).Value = Month(Now) & "." & Year(Now) & " ИТОГ  СВОД"
+                .Cells(1, 3).Value = Month(Now) & "." & Year(Now) & " COMMON TABLE"
             Else
-                .Cells(1, 3).Value = "0" & Month(Now) & "." & Year(Now) & " ИТОГ  СВОД"
+                .Cells(1, 3).Value = "0" & Month(Now) & "." & Year(Now) & " COMMON TABLE"
             End If
             
-            .Cells(2, 1).Value = "Сумма ДЗ"
-            .Cells(3, 1).Value = "Сумм резерва ДЗ"
+            .Cells(2, 1).Value = "DZ Sum"
+            .Cells(3, 1).Value = "DZ Reserve Sum"
             
             .Range("A1:C1").Interior.Color = mcGreenColor
             .Range("A2:A3").Interior.Color = mcLightGreyColor
@@ -498,7 +510,7 @@ BuildPeriods:
             
             .Range("B2:C3").NumberFormat = "0.00"
             
-            ' Вставляет значения
+            ' Inserts values
             
             .Cells(2, 2).Value = m_wsPreviousCommonPrimary.Cells(1, 36).Value
             .Cells(3, 2).Value = m_wsPreviousCommonPrimary.Cells(1, 41).Value
@@ -538,7 +550,7 @@ BuildPeriods:
     
 ErrorHandler_CreateCommonTable:
 
-    Call Lib.FatalError("Не удалось сформировать итоговой свод")
+    Call Lib.FatalError("Failed to generate summary summary")
     Lib.DisableOptimization
     End
     
@@ -550,9 +562,8 @@ Public Sub UpdateRegionalTable()
     
     Lib.AddLogNote "Updating a regional table"
     
-    ' Книга со сводом
     Dim wbRegional        As Workbook: Set wbRegional = Workbooks.Open(Filename:=frmMain.txtRegionalPath.Value, ReadOnly:=False)
-    Dim wsRegionalPrimary As Worksheet: Set wsRegionalPrimary = wbRegional.Worksheets("свод")
+    Dim wsRegionalPrimary As Worksheet: Set wsRegionalPrimary = wbRegional.Worksheets("Common")
     
     Dim nRegionalRows As Long: nRegionalRows = wsRegionalPrimary.Cells(wsRegionalPrimary.Rows.Count, 1).End(xlUp).Row
     Dim i, j, k       As Long
@@ -564,12 +575,12 @@ Public Sub UpdateRegionalTable()
     Dim dictASR       As Object: Set dictASR = CreateObject("Scripting.Dictionary")
     Dim dictSplitting As Object: Set dictSplitting = CreateObject("Scripting.Dictionary")
     
-    ' Проверка по Форме 7.4
+    ' Check using Form 7.4
     If Not frmMain.txtFormPath.Value = "" Then
         
         ' Loading 15%
         With frmLoading
-            .SetInfo "Проверка по Форме 7.4..."
+            .SetInfo "Check using Form 7.4..."
             .SetProgress 15
         End With
         
@@ -580,7 +591,7 @@ Public Sub UpdateRegionalTable()
             .Range("A:AA").AutoFilter Field:=6, Criteria1:="OEBS"
         End With
         
-        ' Инициализирует массив транзакций
+        ' Initializes an array of transactions
         For i = 5 To nRegionalRows
             
             arrRegional(i) = CStr(wsRegionalPrimary.Cells(i, 1).Value)
@@ -589,7 +600,7 @@ Public Sub UpdateRegionalTable()
                 
                 colFilteredIndices.Add i
                 
-                If wsRegionalPrimary.Cells(i, 9).Value = "ок" Then
+                If wsRegionalPrimary.Cells(i, 9).Value = "OK" Then
                     With wsRegionalPrimary
                         .Range(.Cells(i, 9), .Cells(i, 9)).Interior.Color = mcYellowColor
                     End With
@@ -619,7 +630,7 @@ Public Sub UpdateRegionalTable()
             If Not dictForm.Exists(arrRegional(i)) Then
                 With wsRegionalPrimary
                     .Range(.Cells(i, 9), .Cells(i, 9)).Interior.Color = mcWhiteColor
-                    .Cells(i, 9).Value = "ок"
+                    .Cells(i, 9).Value = "OK"
                 End With
             End If
         Next
@@ -630,12 +641,12 @@ Public Sub UpdateRegionalTable()
         
     End If
     
-    ' Проверка по АСР Расчетам
+    ' Check according to ACP Calculations
     If Not frmMain.txtASRPath.Value = "" Then
         
         ' Loading 45%
         With frmLoading
-            .SetInfo "Проверка по АСР Расчетам..."
+            .SetInfo "Checking against ASR Calculations..."
             .SetProgress 45
         End With
         
@@ -643,10 +654,10 @@ Public Sub UpdateRegionalTable()
         
         With wsRegionalPrimary
             .AutoFilterMode = False
-            .Range("A:AA").AutoFilter Field:=6, Criteria1:="АСР Расчеты"
+            .Range("A:AA").AutoFilter Field:=6, Criteria1:="ASR Repayments"
         End With
         
-        ' Инициализирует массив транзакций
+        ' Initializes an array of transactions
         For i = 5 To nRegionalRows
             
             arrRegional(i) = CStr(wsRegionalPrimary.Cells(i, 1).Value)
@@ -655,7 +666,7 @@ Public Sub UpdateRegionalTable()
                 
                 colFilteredIndices.Add i
             
-                If wsRegionalPrimary.Cells(i, 9).Value = "ок" Then
+                If wsRegionalPrimary.Cells(i, 9).Value = "OK" Then
                     With wsRegionalPrimary
                         .Range(.Cells(i, 9), .Cells(i, 9)).Interior.Color = mcYellowColor
                     End With
@@ -685,7 +696,7 @@ Public Sub UpdateRegionalTable()
             If Not dictASR.Exists(arrRegional(i)) Then
                 With wsRegionalPrimary
                     .Range(.Cells(i, 9), .Cells(i, 9)).Interior.Color = mcWhiteColor
-                    .Cells(i, 9).Value = "ок"
+                    .Cells(i, 9).Value = "OK"
                 End With
             End If
         Next
@@ -696,12 +707,12 @@ Public Sub UpdateRegionalTable()
         
     End If
     
-    ' Проверка по раздельной предоплате
+    ' Check for separate prepayment
     If Not frmMain.txtSplittingPath.Value = "" Then
         
         ' Loading 75%
         With frmLoading
-            .SetInfo "Проверка по раздельной предоплате..."
+            .SetInfo "Checking for separate prepayment..."
             .SetProgress 75
         End With
         
@@ -709,10 +720,10 @@ Public Sub UpdateRegionalTable()
         
         With wsRegionalPrimary
             .AutoFilterMode = False
-            .Range("A:AA").AutoFilter Field:=6, Criteria1:="Кредиторы"
+            .Range("A:AA").AutoFilter Field:=6, Criteria1:="Creditors"
         End With
         
-        ' Инициализирует массив транзакций
+        ' Initializes an array of transactions
         For i = 5 To nRegionalRows
         
             arrRegional(i) = CStr(wsRegionalPrimary.Cells(i, 1).Value)
@@ -721,7 +732,7 @@ Public Sub UpdateRegionalTable()
                 
                 colFilteredIndices.Add i
             
-                If wsRegionalPrimary.Cells(i, 9).Value = "ок" Then
+                If wsRegionalPrimary.Cells(i, 9).Value = "OK" Then
                     With wsRegionalPrimary
                         .Range(.Cells(i, 9), .Cells(i, 9)).Interior.Color = mcYellowColor
                     End With
@@ -751,7 +762,7 @@ Public Sub UpdateRegionalTable()
             If Not dictSplitting.Exists(arrRegional(i)) Then
                 With wsRegionalPrimary
                     .Range(.Cells(i, 9), .Cells(i, 9)).Interior.Color = mcWhiteColor
-                    .Cells(i, 9).Value = "ок"
+                    .Cells(i, 9).Value = "OK"
                 End With
             End If
         Next
@@ -773,7 +784,7 @@ Public Sub UpdateRegionalTable()
     Application.CutCopyMode = False
     wsRegionalPrimary.AutoFilterMode = False
     
-    ' Сбрасывает выделенный диапозон после работы кода
+    ' Resets the selected range after the code runs
     With wsRegionalPrimary
         .Activate
         .Range("A1").Select
@@ -786,7 +797,7 @@ Public Sub UpdateRegionalTable()
     
 ErrorHandler_UpdateRegionalTable:
 
-    Call Lib.FatalError("Не удалось обновить сводный файл за предыдущий период")
+    Call Lib.FatalError("Failed to update the summary file for the previous period")
     Lib.DisableOptimization
     End
     

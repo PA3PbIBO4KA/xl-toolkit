@@ -9,8 +9,8 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 
 ' Name: CLibXL
-' Author: Михаил Красюк
-' Date: 13.06.2024
+' Author: Mikhail Krasyuk
+' Date: 23.07.2024
 
 Option Explicit
 
@@ -25,7 +25,7 @@ Private m_sFileName    As String
 
 Private m_nFileLines As Long
 
-' Конструктор класса
+' Class constructor
 Private Sub class_initialize()
     
     m_sFolderPath = m_LogFilesPath & Application.UserName & mcBackslash
@@ -40,14 +40,14 @@ Private Sub class_initialize()
     
 End Sub
 
-' Для лог файлов и Debug.Print
+' For log files and Debug.Print
 Private Function Today() As String
     
     Today = "[" & Now & "]: "
     
 End Function
 
-' Создание лог файла. Вызывается в конце программы.
+' Create a log file. Called at the end of the program.
 Public Sub CreateLogFile()
     
     If m_nFileLines = 1 Then
@@ -72,7 +72,7 @@ Public Sub CreateLogFile()
     
 End Sub
 
-' Добавляет строчку с текстом в будущий лог файл
+' Adds a line of text to the future log file
 Public Sub AddLogNote(ByVal Text As String)
     
     m_asFileLine(m_nFileLines) = Today & Text
@@ -81,7 +81,7 @@ Public Sub AddLogNote(ByVal Text As String)
     
 End Sub
 
-' Отключение UI во время выполнения программы. Оптимизирует процесс выполнения макроса
+'Disables the UI while the program is running. Optimizes the macro execution process
 Public Sub EnableOptimization()
     
     With Application
@@ -95,7 +95,7 @@ Public Sub EnableOptimization()
     
 End Sub
 
-' Включение UI после выполнения программы. Возврат к настройкам по-умолчанию
+' Enable UI after program execution. Return to default settings
 Public Sub DisableOptimization()
 
     With Application
@@ -109,7 +109,7 @@ Public Sub DisableOptimization()
     
 End Sub
 
-' Возвращает кол-во строк в таблице
+' Returns the number of rows in the table
 Public Function GetRowsCount(ByVal Column As Long, Optional Method As Long = mcByFiltering, Optional Sheet As Worksheet = Nothing) As Long
     
     If Sheet Is Nothing Then Set Sheet = ActiveSheet
@@ -133,7 +133,7 @@ Public Function GetRowsCount(ByVal Column As Long, Optional Method As Long = mcB
     
 End Function
 
-' Возвращает кол-во столбцов в таблице
+' Returns the number of columns in the table
 Public Function GetColumnsCount(ByVal Row As Long, Optional Method As Long = mcByFiltering, Optional Sheet As Worksheet = Nothing) As Long
     
     If Sheet Is Nothing Then Set Sheet = ActiveSheet
@@ -171,7 +171,7 @@ Public Function IsWorkbookOpen(Filename As String) As Boolean
     
 End Function
 
-' Проверка существует ли файл в папке
+' Checking if the corresponding .xlsx file is open
 Function IsFileExists(Filename As String) As Boolean
     
     If FileSystem.FileExists(Filename) Then
@@ -182,7 +182,7 @@ Function IsFileExists(Filename As String) As Boolean
     
 End Function
 
-' Проверка существует ли лист в .xlsx файле
+' Checking whether a sheet exists in the .xlsx file
 Public Function IsSheetExists(ByVal SheetName As String, Optional Workbook As Workbook = Nothing) As Boolean
 
     On Error Resume Next
@@ -197,7 +197,7 @@ Public Function IsSheetExists(ByVal SheetName As String, Optional Workbook As Wo
     
 End Function
 
-' Ставит на паузу макрос
+' Pauses the macro
 Public Sub Delay(Optional ByVal Milliseconds As Long = 5000)
     
     If Milliseconds = 0 Then Exit Sub
@@ -206,7 +206,7 @@ Public Sub Delay(Optional ByVal Milliseconds As Long = 5000)
     
 End Sub
 
-' Шаблон для выбора .xlsx файл пользователем через UI
+' Template for user selection of .xlsx file via UI
 Public Function ChooseXLSXFile() As String
     
     Dim sTitle As String: sTitle = "Выберете файл Excel"
@@ -226,7 +226,7 @@ Public Function ChooseXLSXFile() As String
 
 End Function
 
-' Закрывает все .xlsx файлы заданые в массиве
+' Closes all .xlsx files specified in the array
 Public Sub CloseAllWorkbooks(ByRef ArrayWorkbooks() As Variant, Optional ByVal Saving As Boolean = False)
     
     Dim wb As Workbook
@@ -244,7 +244,7 @@ Public Sub CloseAllWorkbooks(ByRef ArrayWorkbooks() As Variant, Optional ByVal S
     
 End Sub
 
-' Преобразует номер столбца в букву
+' Converts the column number to a letter
 Public Function GetColumnLetter(ByVal Column As Long) As String
 
     Dim sLetter As String
@@ -267,7 +267,7 @@ Public Function GetColumnLetter(ByVal Column As Long) As String
     
 End Function
 
-' Выделяет границы заданного диапозона
+' Highlights the boundaries of a specified range
 Public Sub AcceptCellsBorders(TableRange As Range)
     
     With TableRange
@@ -283,28 +283,28 @@ Public Sub AcceptCellsBorders(TableRange As Range)
     
 End Sub
 
-' Выход из .xlsm файла после выполнения макроса
+' Exit the .xlsm file after executing the macro
 Public Sub ExitMacros()
     
     Application.OnTime Now + TimeValue("00:00:01"), "CloseMacrosWorkbook"
     
 End Sub
 
-' Обработчик ошибок
+' Error handler
 Public Sub FatalError(ByVal Explanation As String)
     
-    ' Инициализация краш репортера
+    ' Initializing the crash reporter
     mcErrorExplanation = Explanation
     frmCrashReporter.Show
     
-    Rem !_СТАРЫЙ ВАРИАНТ_! Rem
+    Rem !_OLD VERSION_! Rem
     'MsgBox Title:="Fatal Error", _
     '       Prompt:=Explanation & vbCrLf & vbCrLf & _
     '               "Error code: " & Err.Number & vbCrLf & _
     '               "Decs: " & Err.Description & vbCrLf & _
     '               "Src: " & Err.Source
     
-    ' Создание лог файла
+    ' Creating a log file
     With Me
         .AddLogNote "Error: " & Err.Description
         .CreateLogFile

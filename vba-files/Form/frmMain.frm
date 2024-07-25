@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmMain 
-   Caption         =   "Сбор свода"
+   Caption         =   "Common Builder"
    ClientHeight    =   7875
    ClientLeft      =   120
    ClientTop       =   465
@@ -16,12 +16,12 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 
 ' Name: frmMain
-' Author: Михаил Красюк
+' Author: Mikhail Krasyuk
 ' Date: 16.07.2024
 
 Option Explicit
 
-' Инициализация
+' Initialization
 Private Sub UserForm_Initialize()
     
     On Error GoTo ErrorHandler_Initialize
@@ -30,24 +30,24 @@ Private Sub UserForm_Initialize()
     Dim sFileName   As String
     Dim file        As Object
     
-    ' NOTE -- тут должен быть прописан путь
+    ' The path should be written here
     sFolderPath = ""
     
     For Each file In CreateObject("Scripting.FileSystemObject").GetFolder(sFolderPath).Files
         
         sFileName = file.Name
         
-        If sFileName Like "Форма 7.4" & "*" Then
+        If sFileName Like "Form 7.4" & "*" Then
             txtFormPath.Value = sFolderPath & sFileName
             GoTo NextFile
         End If
         
-        If sFileName Like "АСР Расчеты" & "*" Then
+        If sFileName Like "ASR Calculations" & "*" Then
             txtASRPath.Value = sFolderPath & sFileName
             GoTo NextFile
         End If
         
-        If sFileName Like "Разделение предоплат" & "*" Then
+        If sFileName Like "Prepayment Split" & "*" Then
             txtSplittingPath.Value = sFolderPath & sFileName
             GoTo NextFile
         End If
@@ -59,13 +59,13 @@ NextFile:
     
 ErrorHandler_Initialize:
 
-    Call Lib.FatalError("Не удалось инициализировать frmMain")
+    Call Lib.FatalError("Failed to initialize frmMain")
     Lib.DisableOptimization
     End
     
 End Sub
 
-' Выбор папки для нового СВОДа
+' Selecting a folder for the new common table
 Private Sub btnChooseFolder_Click()
     
     On Error GoTo ErrorHandler_Click
@@ -74,7 +74,7 @@ Private Sub btnChooseFolder_Click()
     
     With Application.FileDialog(msoFileDialogFolderPicker)
     
-        .Title = "Выберете папку"
+        .Title = "Select settings"
         .Show
         
         If .SelectedItems.Count > 0 Then
@@ -91,13 +91,13 @@ Private Sub btnChooseFolder_Click()
     
 ErrorHandler_Click:
 
-    Call Lib.FatalError("Не удалось обработать нажатие клавиши")
+    Call Lib.FatalError("Failed to process button press")
     Lib.DisableOptimization
     End
     
 End Sub
 
-' Дальше идут выбор файлов для проверки погашения через проводник
+' Next comes the selection of files to check the repayment through the explorer
 
 Private Sub btnChooseRegionalFile_Click()
     
@@ -127,7 +127,7 @@ Private Sub btnChooseSplittingFile_Click()
     
 End Sub
 
-' Создание нового СВОДа
+' Creating .xlsx file for a new common table
 Private Sub btnCreateFile_Click()
     
     On Error GoTo ErrorHandler_Click
@@ -138,7 +138,6 @@ Private Sub btnCreateFile_Click()
     
     frmLoading.Show
     
-    ' FLO -- дрязный фокус чтобы интерфейс не слетал.
     Call Lib.Delay(1500)
     
     Lib.EnableOptimization
@@ -146,7 +145,7 @@ Private Sub btnCreateFile_Click()
     Call Books.CreateCommonTable
     Lib.DisableOptimization
     
-    MsgBox "Свод построен"
+    MsgBox "Common table is built"
     
     With Lib
         .AddLogNote "Macros Closed"
@@ -157,13 +156,13 @@ Private Sub btnCreateFile_Click()
     
 ErrorHandler_Click:
 
-    Call Lib.FatalError("Не удалось обработать нажатие клавиши")
+    Call Lib.FatalError("Failed to process button press")
     Lib.DisableOptimization
     End
     
 End Sub
 
-' Проверка погашений
+' Checking repayments
 Private Sub btnCheckRepayment_Click()
     
     On Error GoTo ErrorHandler_Click
@@ -174,7 +173,6 @@ Private Sub btnCheckRepayment_Click()
     
     frmLoading.Show
     
-    ' FLO -- дрязный фокус чтобы интерфейс не слетал.
     Call Lib.Delay(1500)
     
     Lib.EnableOptimization
@@ -183,7 +181,7 @@ Private Sub btnCheckRepayment_Click()
        
     frmLoading.Hide
        
-    MsgBox "Проверка на погашения завершена"
+    MsgBox "Checking repayments is complete"
        
     With Lib
         .AddLogNote "Macros Closed"
@@ -194,7 +192,7 @@ Private Sub btnCheckRepayment_Click()
     
 ErrorHandler_Click:
 
-    Call Lib.FatalError("Не удалось обработать нажатие клавиши")
+    Call Lib.FatalError("Failed to process button press")
     Lib.DisableOptimization
     End
     
