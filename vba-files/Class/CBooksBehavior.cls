@@ -480,7 +480,7 @@ Periods_PasteAll:
         
         With m_wbCommon
             .Worksheets.Add After:=m_wbCommon.Worksheets("Common")
-            .Worksheets(2).Name = "для сравнения"
+            .Worksheets(2).Name = "for comparison"
         End With
         
         ' Comparison sheet
@@ -774,12 +774,12 @@ Public Sub UpdateRegionalTable()
     End If
     
     ' Loading 99%
-        With frmLoading
-            .SetInfo ""
-            .SetProgress 99
-        End With
+    With frmLoading
+    	.SetInfo ""
+        .SetProgress 99
+    End With
         
-        Call Lib.Delay(2000)
+    Call Lib.Delay(2000)
     
     Application.CutCopyMode = False
     wsRegionalPrimary.AutoFilterMode = False

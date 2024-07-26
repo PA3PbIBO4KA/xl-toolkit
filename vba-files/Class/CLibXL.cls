@@ -157,7 +157,7 @@ Public Function GetColumnsCount(ByVal Row As Long, Optional Method As Long = mcB
     
 End Function
 
-' Проверка открыт ли соответствующий .xlsx файл
+' Check that the corresponding .xlsx file is open
 Public Function IsWorkbookOpen(Filename As String) As Boolean
 
     Dim iFF As Integer
@@ -209,7 +209,7 @@ End Sub
 ' Template for user selection of .xlsx file via UI
 Public Function ChooseXLSXFile() As String
     
-    Dim sTitle As String: sTitle = "Выберете файл Excel"
+    Dim sTitle As String: sTitle = "Select Excel file"
 
     Dim sFileName As String: sFileName = Application.GetOpenFilename("All files(*.*),*.*", 1, sTitle, , False)
 

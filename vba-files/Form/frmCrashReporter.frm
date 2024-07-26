@@ -22,14 +22,12 @@ Option Explicit
 
 ' Initialization
 Private Sub UserForm_Initialize()
-    
     lblExplanation.Caption = "Explanation: " & mcErrorExplanation
     lblErrorCode.Caption = "Error Code: " & Err.Number
     lblSource.Caption = "Source: " & Err.Source
     lblDescription.Caption = "Description: " & Err.Description
     lblFile.Caption = "File: " & Err.HelpFile
     lblLine.Caption = "Line: " & Erl
-    
 End Sub
 
 Private Sub btnClose_Click()
