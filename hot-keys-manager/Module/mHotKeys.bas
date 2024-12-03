@@ -73,7 +73,7 @@ Attribute CreateTable.VB_ProcData.VB_Invoke_Func = "A\n14"
             
             If IsAllCellsNumerical Then
                 .Range(.Cells(UpperRow + 1, ColumnIndex), .Cells(RowsCount, ColumnIndex)).NumberFormat = "0"
-                Let IsAllCellsNumerical = False 'обнуление переменной
+                Let IsAllCellsNumerical = False 'Г®ГЎГ­ГіГ«ГҐГ­ГЁГҐ ГЇГҐГ°ГҐГ¬ГҐГ­Г­Г®Г©
             End If
             
 NextColumnIndex:
@@ -128,14 +128,14 @@ Attribute CreatePivotTable.VB_ProcData.VB_Invoke_Func = "P\n14"
     
     If PivotField <> "" Then
         With ptData
-            .AddDataField .PivotFields(PivotField), "Кол-во записей", xlCount
+            .AddDataField .PivotFields(PivotField), "ГЉГ®Г«-ГўГ® Г§Г ГЇГЁГ±ГҐГ©", xlCount
         End With
     End If
     
 End Sub
 
 ' Shift + Ctrl + R
-' Копирует кол-во строчек из активного листа
+' ГЉГ®ГЇГЁГ°ГіГҐГІ ГЄГ®Г«-ГўГ® Г±ГІГ°Г®Г·ГҐГЄ ГЁГ§ Г ГЄГІГЁГўГ­Г®ГЈГ® Г«ГЁГ±ГІГ 
 Sub GetRowsCount()
 Attribute GetRowsCount.VB_ProcData.VB_Invoke_Func = "R\n14"
     
