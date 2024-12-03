@@ -1,6 +1,6 @@
 VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmSettings 
-   Caption         =   "Íàñòðîéêè"
+   Caption         =   "ÃÃ Ã±Ã²Ã°Ã®Ã©ÃªÃ¨"
    ClientHeight    =   2310
    ClientLeft      =   120
    ClientTop       =   465
@@ -36,7 +36,7 @@ Private Sub btnChooseFolder_Click()
     
     With Application.FileDialog(msoFileDialogFolderPicker)
     
-        .Title = "Âûáåðåòå ïàïêó"
+        .Title = "Ã‚Ã»Ã¡Ã¥Ã°Ã¥Ã²Ã¥ Ã¯Ã Ã¯ÃªÃ³"
         .Show
         
         If .SelectedItems.Count > 0 Then
