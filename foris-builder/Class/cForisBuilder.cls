@@ -97,7 +97,7 @@ Private Sub CopyPasteValues(ByVal XLSWorksheet As Worksheet)
         pTargetWorksheet.Range("B" & pTargetWorksheetRowsCount + 1).PasteSpecial xlPasteValuesAndNumberFormats
     End If
     
-    pTargetWorksheet.Range("A1").Value = "Абоненты"
+    pTargetWorksheet.Range("A1").Value = "ГЂГЎГ®Г­ГҐГ­ГІГ»"
     
     Let pTargetWorksheetRowsCount = Lib.GetRowsCount(Sheet:=pTargetWorksheet, Column:=2, Method:=mcByEnd)
     
