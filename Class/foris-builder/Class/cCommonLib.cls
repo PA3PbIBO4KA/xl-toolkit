@@ -25,7 +25,7 @@ Private m_sFileName    As String
 
 Private m_nFileLines As Long
 
-' Конструктор класса
+' ГЉГ®Г­Г±ГІГ°ГіГЄГІГ®Г° ГЄГ«Г Г±Г±Г 
 Private Sub Class_Initialize()
     
     m_sFolderPath = m_LogFilesPath & Application.UserName & mcBackslash
@@ -40,12 +40,12 @@ Private Sub Class_Initialize()
     
 End Sub
 
-' Для лог файлов и Debug.Print
+' Г„Г«Гї Г«Г®ГЈ ГґГ Г©Г«Г®Гў ГЁ Debug.Print
 Private Function Today() As String
     Today = "[" & Now & "]: "
 End Function
 
-' Создание лог файла. Вызывается в конце программы.
+' Г‘Г®Г§Г¤Г Г­ГЁГҐ Г«Г®ГЈ ГґГ Г©Г«Г . Г‚Г»Г§Г»ГўГ ГҐГІГ±Гї Гў ГЄГ®Г­Г¶ГҐ ГЇГ°Г®ГЈГ°Г Г¬Г¬Г».
 Public Sub CreateLogFile()
     
     If m_nFileLines = 1 Then
@@ -70,13 +70,13 @@ Public Sub CreateLogFile()
     
 End Sub
 
-' Добавляет строчку с текстом в будущий лог файл
+' Г„Г®ГЎГ ГўГ«ГїГҐГІ Г±ГІГ°Г®Г·ГЄГі Г± ГІГҐГЄГ±ГІГ®Г¬ Гў ГЎГіГ¤ГіГ№ГЁГ© Г«Г®ГЈ ГґГ Г©Г«
 Public Sub AddLogNote(ByVal Text As String)
     m_asFileLine(m_nFileLines) = Today & Text
     m_nFileLines = m_nFileLines + 1
 End Sub
 
-' Отключение UI во время выполнения программы. Оптимизирует процесс выполнения макроса
+' ГЋГІГЄГ«ГѕГ·ГҐГ­ГЁГҐ UI ГўГ® ГўГ°ГҐГ¬Гї ГўГ»ГЇГ®Г«Г­ГҐГ­ГЁГї ГЇГ°Г®ГЈГ°Г Г¬Г¬Г». ГЋГЇГІГЁГ¬ГЁГ§ГЁГ°ГіГҐГІ ГЇГ°Г®Г¶ГҐГ±Г± ГўГ»ГЇГ®Г«Г­ГҐГ­ГЁГї Г¬Г ГЄГ°Г®Г±Г 
 Public Sub EnableOptimization()
     With Application
         .AskToUpdateLinks = False
@@ -88,7 +88,7 @@ Public Sub EnableOptimization()
     End With
 End Sub
 
-' Включение UI после выполнения программы. Возврат к настройкам по-умолчанию
+' Г‚ГЄГ«ГѕГ·ГҐГ­ГЁГҐ UI ГЇГ®Г±Г«ГҐ ГўГ»ГЇГ®Г«Г­ГҐГ­ГЁГї ГЇГ°Г®ГЈГ°Г Г¬Г¬Г». Г‚Г®Г§ГўГ°Г ГІ ГЄ Г­Г Г±ГІГ°Г®Г©ГЄГ Г¬ ГЇГ®-ГіГ¬Г®Г«Г·Г Г­ГЁГѕ
 Public Sub DisableOptimization()
     With Application
         .AskToUpdateLinks = True
@@ -100,7 +100,7 @@ Public Sub DisableOptimization()
     End With
 End Sub
 
-' Возвращает кол-во строк в таблице
+' Г‚Г®Г§ГўГ°Г Г№Г ГҐГІ ГЄГ®Г«-ГўГ® Г±ГІГ°Г®ГЄ Гў ГІГ ГЎГ«ГЁГ¶ГҐ
 Public Function GetRowsCount(Optional Column As Long = 1, Optional Method As Long = mcByFiltering, Optional Sheet As Worksheet = Nothing) As Long
     
     If Sheet Is Nothing Then Set Sheet = ActiveSheet
@@ -124,7 +124,7 @@ Public Function GetRowsCount(Optional Column As Long = 1, Optional Method As Lon
     
 End Function
 
-' Возвращает кол-во столбцов в таблице
+' Г‚Г®Г§ГўГ°Г Г№Г ГҐГІ ГЄГ®Г«-ГўГ® Г±ГІГ®Г«ГЎГ¶Г®Гў Гў ГІГ ГЎГ«ГЁГ¶ГҐ
 Public Function GetColumnsCount(Optional Row As Long = 1, Optional Method As Long = mcByFiltering, Optional Sheet As Worksheet = Nothing) As Long
     
     If Sheet Is Nothing Then Set Sheet = ActiveSheet
@@ -178,7 +178,7 @@ Public Function IsValueInCollection(Collection As Collection, Value As Variant) 
     
 End Function
 
-' Проверка открыт ли соответствующий .xlsx файл
+' ГЏГ°Г®ГўГҐГ°ГЄГ  Г®ГІГЄГ°Г»ГІ Г«ГЁ Г±Г®Г®ГІГўГҐГІГ±ГІГўГіГѕГ№ГЁГ© .xlsx ГґГ Г©Г«
 Public Function IsWorkbookOpen(Filename As String) As Boolean
 
     Dim iFF As Integer
@@ -192,7 +192,7 @@ Public Function IsWorkbookOpen(Filename As String) As Boolean
     
 End Function
 
-' Проверка существует ли файл в папке
+' ГЏГ°Г®ГўГҐГ°ГЄГ  Г±ГіГ№ГҐГ±ГІГўГіГҐГІ Г«ГЁ ГґГ Г©Г« Гў ГЇГ ГЇГЄГҐ
 Function IsFileExists(Filename As String) As Boolean
     If FileSystem.FileExists(Filename) Then
         IsFileExists = True
@@ -201,7 +201,7 @@ Function IsFileExists(Filename As String) As Boolean
     End If
 End Function
 
-' Проверка существует ли лист в .xlsx файле
+' ГЏГ°Г®ГўГҐГ°ГЄГ  Г±ГіГ№ГҐГ±ГІГўГіГҐГІ Г«ГЁ Г«ГЁГ±ГІ Гў .xlsx ГґГ Г©Г«ГҐ
 Public Function IsSheetExists(ByVal SheetName As String, Optional Workbook As Workbook = Nothing) As Boolean
 
     On Error Resume Next
@@ -216,7 +216,7 @@ Public Function IsSheetExists(ByVal SheetName As String, Optional Workbook As Wo
     
 End Function
 
-' Ставит на паузу макрос
+' Г‘ГІГ ГўГЁГІ Г­Г  ГЇГ ГіГ§Гі Г¬Г ГЄГ°Г®Г±
 Public Sub Delay(Optional ByVal Milliseconds As Long = 5000)
     
     If Milliseconds = 0 Then Exit Sub
@@ -225,10 +225,10 @@ Public Sub Delay(Optional ByVal Milliseconds As Long = 5000)
     
 End Sub
 
-' Шаблон для выбора .xlsx файл пользователем через UI
+' ГГ ГЎГ«Г®Г­ Г¤Г«Гї ГўГ»ГЎГ®Г°Г  .xlsx ГґГ Г©Г« ГЇГ®Г«ГјГ§Г®ГўГ ГІГҐГ«ГҐГ¬ Г·ГҐГ°ГҐГ§ UI
 Public Function ChooseXLSXFile() As String
     
-    Dim sTitle As String: sTitle = "Выберете файл Excel"
+    Dim sTitle As String: sTitle = "Г‚Г»ГЎГҐГ°ГҐГІГҐ ГґГ Г©Г« Excel"
 
     Dim sFileName As String: sFileName = Application.GetOpenFilename("All files(*.*),*.*", 1, sTitle, , False)
 
@@ -245,7 +245,7 @@ Public Function ChooseXLSXFile() As String
 
 End Function
 
-' Закрывает все .xlsx файлы заданые в массиве
+' Г‡Г ГЄГ°Г»ГўГ ГҐГІ ГўГ±ГҐ .xlsx ГґГ Г©Г«Г» Г§Г Г¤Г Г­Г»ГҐ Гў Г¬Г Г±Г±ГЁГўГҐ
 Public Sub CloseAllWorkbooks(ByRef ArrayWorkbooks() As Variant, Optional ByVal Saving As Boolean = False)
     
     Dim wb As Workbook
@@ -263,7 +263,7 @@ Public Sub CloseAllWorkbooks(ByRef ArrayWorkbooks() As Variant, Optional ByVal S
     
 End Sub
 
-' Преобразует номер столбца в букву
+' ГЏГ°ГҐГ®ГЎГ°Г Г§ГіГҐГІ Г­Г®Г¬ГҐГ° Г±ГІГ®Г«ГЎГ¶Г  Гў ГЎГіГЄГўГі
 Public Function GetColumnLetter(ByVal Column As Long) As String
 
     Dim sLetter As String
@@ -286,7 +286,7 @@ Public Function GetColumnLetter(ByVal Column As Long) As String
     
 End Function
 
-' Выделяет границы заданного диапозона
+' Г‚Г»Г¤ГҐГ«ГїГҐГІ ГЈГ°Г Г­ГЁГ¶Г» Г§Г Г¤Г Г­Г­Г®ГЈГ® Г¤ГЁГ ГЇГ®Г§Г®Г­Г 
 Public Sub AcceptCellsBorders(TableRange As Range)
     With TableRange
         .Borders(xlDiagonalDown).LineStyle = xlNone
@@ -300,26 +300,26 @@ Public Sub AcceptCellsBorders(TableRange As Range)
     End With
 End Sub
 
-' Выход из .xlsm файла после выполнения макроса
+' Г‚Г»ГµГ®Г¤ ГЁГ§ .xlsm ГґГ Г©Г«Г  ГЇГ®Г±Г«ГҐ ГўГ»ГЇГ®Г«Г­ГҐГ­ГЁГї Г¬Г ГЄГ°Г®Г±Г 
 Public Sub ExitMacros()
     Application.OnTime Now + TimeValue("00:00:01"), "CloseMacrosWorkbook"
 End Sub
 
-' Обработчик ошибок
+' ГЋГЎГ°Г ГЎГ®ГІГ·ГЁГЄ Г®ГёГЁГЎГ®ГЄ
 Public Sub FatalError(ByVal Explanation As String)
     
-    ' Инициализация краш репортера
+    ' Г€Г­ГЁГ¶ГЁГ Г«ГЁГ§Г Г¶ГЁГї ГЄГ°Г Гё Г°ГҐГЇГ®Г°ГІГҐГ°Г 
     mcErrorExplanation = Explanation
     frmCrashReporter.Show
     
-    Rem !_СТАРЫЙ ВАРИАНТ_! Rem
+    Rem !_Г‘Г’ГЂГђГ›Г‰ Г‚ГЂГђГ€ГЂГЌГ’_! Rem
     'MsgBox Title:="Fatal Error", _
     '       Prompt:=Explanation & vbCrLf & vbCrLf & _
     '               "Error code: " & Err.Number & vbCrLf & _
     '               "Decs: " & Err.Description & vbCrLf & _
     '               "Src: " & Err.Source
     
-    ' Создание лог файла
+    ' Г‘Г®Г§Г¤Г Г­ГЁГҐ Г«Г®ГЈ ГґГ Г©Г«Г 
     With Me
         .AddLogNote "Error: " & Err.Description
         .CreateLogFile
